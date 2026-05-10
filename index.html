@@ -410,9 +410,12 @@
 
     .review img {
       width: 100%;
-      object-fit: cover;
+      aspect-ratio: 4 / 3;
+      object-fit: contain;
+      background: rgba(255, 255, 255, 0.55);
       display: block;
     }
+
 
     .review h3 {
       color: var(--char);
@@ -523,7 +526,7 @@
       <div class="about-layout">
         <div>
           <div class="eyebrow">Fast serving. Fast delivery.</div>
-          <h1>Burger Express DWP.</h1>
+          <h1>Burger <strong style="color:#6b3b2b">Express</strong> DWP.</h1>
           <p class="intro-copy">The only food court in Dewanpara serving burgers, shawarma, pizza, pasta, fried chicken, momo, chow mein, and more — freshly prepared for every craving.</p>
           <a class="order-link" href="https://www.foodpanda.com.bd/restaurant/urnm/burger-express-dwp" target="_blank">Order From Foodpanda</a>
         </div>
@@ -532,7 +535,7 @@
           <li><span>Address: </span><span>Beltola, Dewanpara, Dhaka-1206</span></li>
           <li><span>Phone: </span><span>+8801918765414</span></li>
           <li><span>Email: </span><span>burger.express.dwp@gmail.com</span></li>
-          <li><span>Facebook: </span><span><a href="https://www.facebook.com/burger.exs" target="_blank">Burger Express DWP.</a></span></li>
+          <li><span>Facebook: </span><span><a href="https://www.facebook.com/burger.exs" target="_blank" style="color: rgba(239, 66, 18, 0.708);">Burger Express DWP.</a></span></li>
         </ul>
       </div>
     </section>
@@ -646,7 +649,7 @@
     </section>
   </main>
 
-  <footer>© Burger Express DWP | Fast Serving | Fast Delivery | Developed by <a href="https://tachyonarif.github.io/Arif-s-protfolio/" target="_blank">Md Ariful Islam</a></footer>
+  <footer>© Burger Express DWP | Fast Serving | Fast Delivery | Developed by <a href="https://tachyonarif.github.io/Arif-s-protfolio/" target="_blank" style="color: rgb(123, 123, 210);"><u>Md Ariful Islam</u></a></footer>
 
   <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
