@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Burger Express DWP</title>
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+
+  <style>
+    :root {
+      --flame: #ef4212;
+      --gold: #ffb936;
+      --char: #170f0b;
+      --smoke: #f6efe8;
+      --line: rgba(23, 15, 11, 0.18);
+      --glass: rgba(255, 248, 240, 0.84);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      color: var(--char);
+      background: #9a9b96;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .site-bg {
+      position: fixed;
+      inset: 0;
+      z-index: -10;
+      overflow: hidden;
+      pointer-events: none;
+      background: #9a9b96;
+    }
+
+    .bg-base {
+      position: absolute;
+      inset: 0;
+      background: url("bg.png") center center / 100% 100% no-repeat;
+    }
+
+    .bg-top {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: clamp(190px, 30vw, 430px);
+      background: url("upsidebg.png") top right / contain no-repeat;
+      opacity: 0;
+      transform: translateY(-160px);
+      filter: blur(14px);
+      animation: slideTopIn 1.4s ease-out forwards;
+      mask-image: linear-gradient(to bottom, black 0%, black 62%, transparent 100%);
+      -webkit-mask-image: linear-gradient(to bottom, black 0%, black 62%, transparent 100%);
+    }
+
+    .bg-bottom-blur {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: -2vh;
+      height: clamp(280px, 44vw, 660px);
+      background: url("bottomsidebg.png") bottom left / contain no-repeat;
+      opacity: 0;
+      transform: translateY(210px);
+      filter: blur(24px);
+      animation: slideBottomBlurIn 1.5s ease-out 0.15s forwards;
+      mask-image: linear-gradient(to top, black 0%, transparent 76%);
+      -webkit-mask-image: linear-gradient(to top, black 0%, transparent 76%);
+    }
+
+    .bg-bottom {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: -1vh;
+      height: clamp(260px, 42vw, 630px);
+      background: url("bottomsidebg.png") bottom left / contain no-repeat;
+      opacity: 0;
+      transform: translateY(190px);
+      filter: blur(16px);
+      animation: slideBottomIn 1.5s ease-out 0.28s forwards;
+      mask-image: linear-gradient(to top, black 0%, black 62%, transparent 100%);
+      -webkit-mask-image: linear-gradient(to top, black 0%, black 62%, transparent 100%);
+    }
+
+    @keyframes slideTopIn {
+      0% {
+        opacity: 0;
+        transform: translateY(-160px);
+        filter: blur(14px);
+      }
+
+      100% {
+        opacity: 0.96;
+        transform: translateY(0);
+        filter: blur(0);
+      }
+    }
+
+    @keyframes slideBottomBlurIn {
+      0% {
+        opacity: 0;
+        transform: translateY(210px);
+        filter: blur(24px);
+      }
+
+      100% {
+        opacity: 0.42;
+        transform: translateY(0);
+        filter: blur(12px);
+      }
+    }
+
+    @keyframes slideBottomIn {
+      0% {
+        opacity: 0;
+        transform: translateY(190px);
+        filter: blur(16px);
+      }
+
+      100% {
+        opacity: 0.96;
+        transform: translateY(0);
+        filter: blur(0);
+      }
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(247, 243, 235, 0.24);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(23, 15, 11, 0.12);
+    }
+
+    nav {
+      width: min(1160px, calc(100% - 28px));
+      margin: auto;
+      min-height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .logo {
+      width: 210px;
+      max-width: 44vw;
+      height: auto;
+      display: block;
+    }
+
+    .links {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 18px;
+      flex-wrap: wrap;
+      color: var(--char);
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .order-link,
+    button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 0;
+      border-radius: 6px;
+      background: var(--flame);
+      color: white;
+      padding: 12px 18px;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 0 12px 26px rgba(239, 66, 18, 0.28);
+    }
+
+    main {
+      width: min(1160px, calc(100% - 28px));
+      margin: auto;
+    }
+
+    section {
+      padding: 64px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .eyebrow {
+      color: var(--flame);
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    h1 {
+      max-width: 760px;
+      color: var(--char);
+      font-size: clamp(44px, 9vw, 92px);
+      line-height: 0.92;
+      text-transform: uppercase;
+      margin-bottom: 22px;
+      text-shadow: 0 2px 18px rgba(255, 255, 255, 0.74);
+    }
+
+    h2 {
+      color: var(--char);
+      font-size: clamp(30px, 5vw, 56px);
+      line-height: 1;
+      text-transform: uppercase;
+      margin-bottom: 26px;
+      text-shadow: 0 2px 16px rgba(255, 255, 255, 0.74);
+    }
+
+    h3 {
+      color: var(--flame);
+      font-size: 24px;
+      margin-bottom: 12px;
+    }
+
+    p {
+      font-size: 17px;
+      line-height: 1.7;
+      margin-bottom: 12px;
+    }
+
+    .about-layout,
+    .history-layout,
+    .recommend-layout,
+    .contact-layout {
+      display: grid;
+      grid-template-columns: 1.08fr 0.92fr;
+      gap: 48px;
+      align-items: start;
+    }
+
+    .intro-copy {
+      max-width: 640px;
+      font-size: 20px;
+      font-weight: 700;
+      text-shadow: 0 1px 14px rgba(255, 255, 255, 0.82);
+    }
+
+    .info-list {
+      list-style: none;
+      border-top: 2px solid var(--char);
+    }
+
+    .info-list li {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 15px 0;
+      border-bottom: 1px solid var(--line);
+      font-size: 16px;
+      font-weight: 800;
+      overflow-wrap: anywhere;
+    }
+
+    .history-note {
+      background: rgba(23, 15, 11, 0.9);
+      color: white;
+      padding: 30px;
+      border-left: 8px solid var(--gold);
+    }
+
+    .history-note h3 {
+      color: var(--gold);
+    }
+    .founder-list {
+      display: grid;
+      gap: 18px;
+      margin-top: 22px;
+    }
+
+    .founder-person {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding-top: 16px;
+      border-top: 1px solid var(--line);
+    }
+
+    .founder-photo {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      object-fit: cover;
+      background: rgba(255, 255, 255, 0.55);
+      border: 3px solid var(--flame);
+    }
+
+    .founder-person strong {
+      display: block;
+      color: var(--char);
+      font-size: 17px;
+    }
+
+    .founder-person span {
+      display: block;
+      font-weight: 800;
+      color: var(--flame);
+      margin-top: 4px;
+    }
+
+    .menu-photo {
+      width: 100%;
+      display: block;
+      margin-bottom: 34px;
+      border: 8px solid rgba(23, 15, 11, 0.86);
+    }
+
+    .menu-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 28px 34px;
+    }
+
+    .menu-group {
+      border-top: 4px solid var(--flame);
+      padding-top: 14px;
+    }
+
+    .menu-group h3 {
+      color: var(--char);
+      font-size: 22px;
+    }
+
+    .menu-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--line);
+      font-weight: 800;
+    }
+
+    .recommend-layout {
+      display: block;
+      max-width: 720px;
+    }
+
+    .recommend-box {
+      background: rgba(255, 248, 240, 0.72);
+      backdrop-filter: blur(8px);
+      border-left: 8px solid var(--flame);
+      padding: 28px;
+    }
+
+    form {
+      display: grid;
+      gap: 12px;
+    }
+
+    input,
+    textarea,
+    select {
+      width: 100%;
+      border: 1px solid rgba(23, 15, 11, 0.22);
+      border-radius: 0;
+      background: rgba(255, 255, 255, 0.86);
+      padding: 14px;
+      font-size: 15px;
+    }
+
+    textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    .reviews {
+      display: grid;
+      gap: 22px;
+      margin-top: 34px;
+    }
+
+    .review {
+      display: grid;
+      grid-template-columns: 230px 1fr;
+      gap: 24px;
+      align-items: start;
+      background: rgba(255, 255, 255, 0.74);
+      border-left: 8px solid var(--flame);
+      padding: 18px;
+    }
+
+    .review.no-photo {
+      grid-template-columns: 1fr;
+    }
+
+    .review img {
+      width: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .review h3 {
+      color: var(--char);
+      margin-bottom: 6px;
+    }
+
+    .stars {
+      color: var(--flame);
+      font-size: 22px;
+      letter-spacing: 1px;
+      font-weight: 900;
+      margin-bottom: 8px;
+    }
+
+    .meta {
+      color: #6b3b2b;
+      font-size: 13px;
+      font-weight: 800;
+      margin-bottom: 6px;
+      overflow-wrap: anywhere;
+    }
+
+    .empty {
+      padding: 22px 0;
+      border-top: 2px solid var(--char);
+      font-weight: 900;
+    }
+
+    .contact-layout a {
+      color: var(--flame);
+      font-weight: 900;
+    }
+    .view-all-wrap {
+      margin-top: 24px;
+      text-align: center;
+    }
+
+    .hidden-review {
+      display: none;
+    }
+
+    .reviews.show-all .hidden-review {
+      display: grid;
+    }
+
+
+    footer {
+      background: var(--char);
+      color: white;
+      text-align: center;
+      padding: 24px 14px;
+      font-weight: 800;
+    }
+
+    @media (max-width: 860px) {
+      nav {
+        justify-content: center;
+        padding: 12px 0;
+      }
+
+      .links {
+        justify-content: center;
+      }
+
+      .about-layout,
+      .history-layout,
+      .contact-layout,
+      .menu-grid,
+      .review {
+        grid-template-columns: 1fr;
+      }
+
+      section {
+        padding: 48px 0;
+      }
+
+      .info-list li {
+        display: block;
+      }
+    }
+  </style>
+</head>
+
+<body>
+    <div class="site-bg">
+      <div class="bg-base"></div>
+      <div class="bg-top"></div>
+      <div class="bg-bottom-blur"></div>
+      <div class="bg-bottom"></div>
+    </div>
+
+  <header>
+    <nav>
+      <img class="logo" src="logo.png" alt="Burger Express DWP Logo" />
+      <div class="links">
+        <a href="#about">About</a>
+        <a href="#history">History</a>
+        <a href="#menu">Menu</a>
+        <a href="#recommend">Recommend</a>
+        <a href="#contact">Contact</a>
+        <a class="order-link" href="https://www.foodpanda.com.bd/restaurant/urnm/burger-express-dwp" target="_blank">Place Order</a>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <section id="about">
+      <div class="about-layout">
+        <div>
+          <div class="eyebrow">Fast serving. Fast delivery.</div>
+          <h1>Burger Express DWP.</h1>
+          <p class="intro-copy">The only food court in Dewanpara serving burgers, shawarma, pizza, pasta, fried chicken, momo, chow mein, and more — freshly prepared for every craving.</p>
+          <a class="order-link" href="https://www.foodpanda.com.bd/restaurant/urnm/burger-express-dwp" target="_blank">Order From Foodpanda</a>
+        </div>
+
+        <ul class="info-list">
+          <li><span>Address</span><span>Beltola, Dewanpara, Dhaka-1206</span></li>
+          <li><span>Phone</span><span>+8801918765414</span></li>
+          <li><span>Email</span><span>burger.express.dwp@gmail.com</span></li>
+          <li><span>Facebook</span><span><a href="https://www.facebook.com/burger.exs" target="_blank">Burger Express DWP.</a></span></li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="history">
+      <h2>History</h2>
+
+      <div class="history-layout">
+        <div>
+          <h3>Creation Date</h3>
+          <p><strong>16 August 2024</strong></p>
+
+          <div class="founder-list">
+            <div class="founder-person">
+              <img class="founder-photo" src="owner-photo.jpg" alt="Mohammad Shariful Islam" />
+              <div>
+                <strong>Mohammad Shariful Islam</strong>
+                <span>Founder & Owner</span>
+              </div>
+            </div>
+
+            <div class="founder-person">
+              <img class="founder-photo" src="cofounder-photo.jpg" alt="Md Ariful Islam" />
+              <div>
+                <strong><a href="https://tachyonarif.github.io/Arif-s-protfolio/" target="_blank">Md Ariful Islam</a></strong>
+                <span>Co-Founder & Producer</span>
+              </div>
+            </div>
+
+            <div class="founder-person">
+              <img class="founder-photo" src="assistant-photo.jpg" alt="Md Shohag Mia" />
+              
+              <div>
+                <strong>Md Shohag Mia</strong>
+                <span>Operations Assistant & Service Coordinator</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="history-note">
+          <h3>Our Story</h3>
+          <p>
+            In late 2019, just before the onset of the COVID-19 pandemic, a group of three friends came together to launch a restaurant. For nearly a year, their dream thrived until the pandemic forced them to close.
+          </p>
+          <p>
+            After a period of reflection, on August 16, 2024, a new food court opened. Mohammad Shariful Islam became the founder and owner, while MD Ariful Islam, as co-founder and producer, played a pivotal role in shaping the business.
+          </p>
+          <p>
+            Under their leadership, Mohammad Shariful Islam took charge of daily operations and overall management, while MD Ariful Islam focused on creative design, market pricing, and strategic development.
+          </p>
+          <p>
+            Today, the food court stands strong, thriving on their dedication and vision, delivering exceptional culinary experiences every day.
+          </p>
+        </div>
+      </div>
+    </section>
+
+
+    <section id="menu">
+      <h2>Food Menu</h2>
+      <img class="menu-photo" src="Menu.png" alt="Burger Express DWP Menu" />
+      <div class="menu-grid" id="menuGrid"></div>
+    </section>
+
+    <section id="recommend">
+      <h2>Customer Feedback</h2>
+      <div class="recommend-layout">
+        <div class="recommend-box">
+          <h3>Write Feedback</h3>
+          <p>Email, rating, date and time will be visible publicly. Photo upload is optional.</p>
+
+          <form id="recommendationForm">
+            <input id="name" type="text" placeholder="Your name" required />
+            <input id="email" type="email" placeholder="Your email" required />
+            <select id="rating" required>
+              <option value="">Select rating</option>
+              <option value="5">&#9733;&#9733;&#9733;&#9733;&#9733; 5 Stars</option>
+              <option value="4">&#9733;&#9733;&#9733;&#9733;&#9734; 4 Stars</option>
+              <option value="3">&#9733;&#9733;&#9733;&#9734;&#9734; 3 Stars</option>
+              <option value="2">&#9733;&#9733;&#9734;&#9734;&#9734; 2 Stars</option>
+              <option value="1">&#9733;&#9734;&#9734;&#9734;&#9734; 1 Star</option>
+            </select>
+            <textarea id="message" placeholder="Write your recommendation" required></textarea>
+            <input id="photo" type="file" accept="image/*" />
+            <button id="submitBtn" type="submit">Submit Feedback</button>
+          </form>
+        </div>
+      </div>
+
+      <div class="reviews" id="recommendationsList"></div>
+    </section>
+
+    <section id="contact">
+      <h2>Contact</h2>
+      <div class="contact-layout">
+        <div>
+          <b>
+          <h3>Visit Us</h3>
+          <p>Beltola, Dewanpara, Dhaka-1206</p>
+          <p><a href="https://www.google.com/maps/place/Burger+Express+Dwp/@23.8154758,90.3854384,616m/data=!3m1!1e3!4m6!3m5!1s0x3755c700275fe457:0xe91c662ffc1656dd!8m2!3d23.8155321!4d90.3870337!16s%2Fg%2F11wq3_vh32?entry=ttu&g_ep=EgoyMDI2MDUwNi4wIKXMDSoASAFQAw%3D%3D" target="_blank">Live location</a></p>
+          </b>
+        </div>
+        <div>
+          <h3>Online</h3>
+          <p><a href="https://www.foodpanda.com.bd/restaurant/urnm/burger-express-dwp" target="_blank">Order from Foodpanda</a></p>
+          <p><a href="https://www.facebook.com/burger.exs" target="_blank">Facebook Page</a></p>
+          <p><a href="mailto:burger.express.dwp@gmail.com">Send Email</a></p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>© Burger Express DWP | Fast Serving | Fast Delivery | Developed by <a href="https://tachyonarif.github.io/Arif-s-protfolio/" target="_blank">Md Ariful Islam</a></footer>
+
+  <script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+  import {
+    getFirestore,
+    collection,
+    addDoc,
+    onSnapshot,
+    query,
+    orderBy,
+    serverTimestamp
+  } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCew4ZYm4miH3nGYxUx1jc682bEpw1Qp10",
+    authDomain: "burger-express-website.firebaseapp.com",
+    projectId: "burger-express-website",
+    storageBucket: "burger-express-website.firebasestorage.app",
+    messagingSenderId: "312240227244",
+    appId: "1:312240227244:web:90fb0704899cb04bba3009",
+    measurementId: "G-6NJ4DG0960"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  const menuItems = [
+    ["1. Burger", [["Mini", "50/-"], ["Big", "80/-"], ["Special Burger Big", "120/-"], ["Naga / BBQ / Cheese", "+20 tk"]]],
+    ["2. Sub Sandwich", [["Chicken Sub", "100/-"], ["Naga / BBQ Sub", "120/-"], ["Cheese Chicken Sub", "160/-"], ["Special Chicken Sub", "180/-"]]],
+    ["3. Nachos", [["Chicken Nachos", "80/-"], ["Naga / BBQ", "100/-"], ["Special", "150/-"]]],
+    ["4. Shawarma", [["Chicken Shawarma", "80/-"], ["Naga / BBQ", "100/-"], ["Special Shawarma", "130/-"]]],
+    ["5. Meat Box", [["Regular", "100/-"], ["Naga / BBQ", "120/-"], ["Special Meat Box", "150/-"]]],
+    ["6. Chicken Ball & Sausage", [["1 Stick Chicken Ball 4 pcs", "30/-"], ["Sausage", "30/-"]]],
+    ["7. Fried Chicken", [["Fried Wings", "50/-"], ["Regular Fried Chicken", "100/-"], ["Spicy Fried Chicken", "100/-"]]],
+    ["8. Pasta", [["Regular", "60/-"], ["Naga / BBQ", "80/-"], ["Cheese Pan Pasta", "120/-"]]],
+    ["9. French Fries & Wages", [["Regular Fries", "50/-"], ["Regular Wages", "80/-"]]],
+    ["10. Pizza", [["Regular 6 inch", "120/-"], ["BBQ / Naga 6 inch", "150/-"], ["Special 6 inch", "200/-"]]],
+    ["11. Chow Mein", [["Regular", "60/-"], ["Naga Chow Mein", "80/-"], ["BBQ Chow Mein", "80/-"]]],
+    ["12. Momo", [["Regular 6 pcs", "100/-"], ["Naga / BBQ 6 pcs", "120/-"], ["Cheese Momo 6 pcs", "150/-"]]]
+  ];
+
+  document.getElementById("menuGrid").innerHTML = menuItems.map(([title, rows]) => `
+    <div class="menu-group">
+      <h3>${title}</h3>
+      ${rows.map(([name, price]) => `
+        <div class="menu-row">
+          <span>${name}</span>
+          <span>${price}</span>
+        </div>
+      `).join("")}
+    </div>
+  `).join("");
+
+  const form = document.getElementById("recommendationForm");
+  const submitBtn = document.getElementById("submitBtn");
+  const list = document.getElementById("recommendationsList");
+
+  function clean(text) {
+    return String(text || "").replace(/[&<>"']/g, char => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#039;"
+    }[char]));
+  }
+
+  function starRating(value) {
+    const rating = Math.max(1, Math.min(5, Number(value) || 1));
+    return "&#9733;".repeat(rating) + "&#9734;".repeat(5 - rating);
+  }
+
+  function formatTime(timestamp, fallback) {
+    const date = timestamp && timestamp.toDate ? timestamp.toDate() : new Date(fallback);
+
+    return date.toLocaleString("en-BD", {
+      dateStyle: "medium",
+      timeStyle: "short",
+      timeZone: "Asia/Dhaka"
+    });
+  }
+
+  function imageToSmallBase64(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+
+      reader.onload = () => {
+        const img = new Image();
+
+        img.onload = () => {
+          const canvas = document.createElement("canvas");
+          const maxSize = 520;
+          let width = img.width;
+          let height = img.height;
+
+          if (width > height && width > maxSize) {
+            height = Math.round((height * maxSize) / width);
+            width = maxSize;
+          } else if (height > maxSize) {
+            width = Math.round((width * maxSize) / height);
+            height = maxSize;
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+          canvas.getContext("2d").drawImage(img, 0, 0, width, height);
+
+          resolve(canvas.toDataURL("image/jpeg", 0.58));
+        };
+
+        img.onerror = reject;
+        img.src = reader.result;
+      };
+
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Uploading...";
+
+    try {
+      const photoFile = document.getElementById("photo").files[0];
+      const photoBase64 = photoFile ? await imageToSmallBase64(photoFile) : "";
+
+      await addDoc(collection(db, "recommendations"), {
+        name: document.getElementById("name").value.trim(),
+        email: document.getElementById("email").value.trim(),
+        rating: Number(document.getElementById("rating").value),
+        message: document.getElementById("message").value.trim(),
+        photoBase64,
+        createdAt: serverTimestamp(),
+        createdAtLocal: new Date().toISOString()
+      });
+
+      form.reset();
+      submitBtn.textContent = "Submitted";
+
+      setTimeout(() => {
+        submitBtn.textContent = "Submit Recommendation";
+      }, 1500);
+    } catch (error) {
+      console.error(error);
+      alert("Upload failed. Make sure Firestore is in test mode.");
+      submitBtn.textContent = "Submit Recommendation";
+    }
+
+    submitBtn.disabled = false;
+  });
+
+  const q = query(collection(db, "recommendations"), orderBy("createdAt", "desc"));
+
+  onSnapshot(q, (snapshot) => {
+    if (snapshot.empty) {
+      list.innerHTML = `<div class="empty">No recommendations yet. Be the first to recommend Burger Express DWP.</div>`;
+      return;
+    }
+
+    const reviewsHTML = snapshot.docs.map((doc, index) => {
+      const item = doc.data();
+
+      const photoMarkup = item.photoBase64
+        ? `<img src="${clean(item.photoBase64)}" alt="Customer uploaded food photo" />`
+        : "";
+
+      const reviewClass = item.photoBase64 ? "review" : "review no-photo";
+      const hiddenClass = index >= 2 ? " hidden-review" : "";
+
+      return `
+        <article class="${reviewClass}${hiddenClass}">
+          ${photoMarkup}
+          <div>
+            <h3>${clean(item.name)}</h3>
+            <div class="stars">${starRating(item.rating)}</div>
+            <div class="meta">Email: ${clean(item.email)}</div>
+            <div class="meta">Date & Time: ${clean(formatTime(item.createdAt, item.createdAtLocal))}</div>
+            <p>${clean(item.message)}</p>
+          </div>
+        </article>
+      `;
+    }).join("");
+
+    const viewAllButton = snapshot.docs.length > 2
+      ? `<div class="view-all-wrap"><button id="viewAllBtn" type="button">View All Recommendations</button></div>`
+      : "";
+
+    list.innerHTML = reviewsHTML + viewAllButton;
+
+    const viewAllBtn = document.getElementById("viewAllBtn");
+
+    if (viewAllBtn) {
+      viewAllBtn.addEventListener("click", () => {
+        list.classList.toggle("show-all");
+
+        viewAllBtn.textContent = list.classList.contains("show-all")
+          ? "Show Recent"
+          : "View All Recommendations";
+      });
+    }
+  });
+</script>
+
+</body>
+</html>
